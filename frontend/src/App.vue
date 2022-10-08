@@ -1,45 +1,64 @@
 <script lang="ts">
-  import Map from "./components/Map.vue";
-  import VesselPanel from "./components/VesselPanel.vue";
+  import Map from "@/components/Map.vue";
+  import VesselPanel from "@/components/VesselPanel.vue";
+  import { defineComponent } from "vue";
+	import type { IVesselItem } from './interfaces';
 
-  export default {
+  export default defineComponent ({
     name: 'App',
     components: {
       Map,
       VesselPanel,
     },
     data() {
-      return { vessels: [{
-        id: '1',
-        name: 'string',
-        lat: 50.9344,
-        lng: -1.39595,
-        address: 'address 1'
-      },{
-        id: '2',
-        name: 'string 2',
-        lat: 51.0714,
-        lng: -1.2202,
-        address: 'address 2'
-      }],
-      focused: {
-        id: '1',
-        name: 'string',
-        lat: 50.9344,
-        lng: -1.39595,
-        address: 'address 1'
-      } }
-    }
-  }
+      return {
+        vessels: [] as IVesselItem[],
+        focused: {} as IVesselItem
+      }
+    },
+    method: {
+			fetchData: function fetchData() {
+        return [{
+          name: 'string',
+          lat: 50.9344,
+          lng: -1.39595,
+          address: 'address 1'
+        }]
+      }
+		},
+		mounted() {
+      const response = [{
+          name: 'string',
+          lat: 50.9344,
+          lng: -1.39595,
+          address: 'address 1'
+        },{
+          name: 'string 2',
+          lat: 51.0714,
+          lng: -1.2202,
+          address: 'address 2'
+      }]
+
+      this.vessels = response
+      this.focused = response[0]
+		}
+    //   .get('https://api.coindesk.com/v1/bpi/currentprice.json')
+    //   .then(response => (this.info = response))
+
+  })
 </script>
 
 <template>
     <header class="header">
       <h1>Lumico Challenge</h1>
     </header>
+    <!-- <p :focused.sync="focused"
+    {{ focused }}
+    ></p> -->
     <main class="grid">
-      <VesselPanel :vessels="vessels"></VesselPanel>
-      <Map :vessels="vessels" :focused="focused" />
+      <p>{{ focused }}</p>
+      <VesselPanel :vessels="vessels" :focused.sync="focused"></VesselPanel>
+      <Map v-if="vessels.length > 0" :vessels="vessels" :focused="focused" />
     </main>
 </template>
 
@@ -103,3 +122,7 @@ Map {
 }
 
 </style>
+
+    function fetchData() {
+      throw new Error('Function not implemented.');
+    }
