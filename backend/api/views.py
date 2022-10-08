@@ -6,8 +6,8 @@ from .serializers import VesselSerializer
 
 
 class VesselDetailApiView(APIView):
-    def put(self, request, name, *args, **kwargs):
-        vessel = Vessel.objects.get(name=name)
+    def put(self, request, id, *args, **kwargs):
+        vessel = Vessel.objects.get(id=id)
         serializer = VesselSerializer(
             data=request.data, instance=vessel, many=False)
 
@@ -15,7 +15,7 @@ class VesselDetailApiView(APIView):
             serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-        instance = self.get_object(name)
+        instance = self.get_object(id)
         if not instance:
             return Response(
                 {"res": "Object with vessel id does not exists"},
@@ -24,9 +24,9 @@ class VesselDetailApiView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, name, *args, **kwargs):
+    def delete(self, request, id, *args, **kwargs):
         try:
-            vessel = Vessel.objects.get(name=name)
+            vessel = Vessel.objects.get(id=id)
         except Vessel.DoesNotExist:
             return Response(
                 {"res": "Object with vessel does not exists"},
@@ -44,7 +44,10 @@ class VesselApiView(APIView):
 
     def post(self, request, *args, **kwargs):
         vesselDetail = {
-            'name': request.data.get('name')
+            'name': request.data.get('name'),
+            'lat': request.data.get('lat'),
+            'lng': request.data.get('lng'),
+            'address': request.data.get('address')
         }
         serializer = VesselSerializer(data=vesselDetail)
         if serializer.is_valid():

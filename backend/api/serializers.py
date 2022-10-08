@@ -5,4 +5,4 @@ from .models import Vessel
 class VesselSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vessel
-        fields = ["name"]
+        fields = ["id", "name", "lat", "lng", "address"]
