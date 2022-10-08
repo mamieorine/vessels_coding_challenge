@@ -1,18 +1,12 @@
-export class IVesselList {
-    list: IVesselItem[];
-
-    constructor(list: IVesselItem[]) {
-      this.list = list
-    }
-}
-
 export class IVesselItem {
+    id: number;
     name: string;
     lat: number;
     lng: number;
     address: string;
 
-    constructor(name: string, lat: number, lng: number, address: string) {
+    constructor(id:number, name: string, lat: number, lng: number, address: string) {
+      this.id = id
       this.name = name
       this.lat = lat
       this.lng = lng

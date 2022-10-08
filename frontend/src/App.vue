@@ -3,6 +3,7 @@
   import VesselPanel from "@/components/VesselPanel.vue";
   import { defineComponent } from "vue";
 	import type { IVesselItem } from './interfaces';
+  import { api } from './utils/api'
 
   export default defineComponent ({
     name: 'App',
@@ -26,25 +27,12 @@
         }]
       }
 		},
-		mounted() {
-      const response = [{
-          name: 'string',
-          lat: 50.9344,
-          lng: -1.39595,
-          address: 'address 1'
-        },{
-          name: 'string 2',
-          lat: 51.0714,
-          lng: -1.2202,
-          address: 'address 2'
-      }]
+		async mounted() {
+      const response = await api.get().then(response => (this.vessels = response.data));
 
-      this.vessels = response
-      this.focused = response[0]
+      this.vessels = response;
+      this.focused = response[0];
 		}
-    //   .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-    //   .then(response => (this.info = response))
-
   })
 </script>
 
