@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "@fawmi/vue-google-maps": "0.9.67",
+    "axios": "^1.1.2",
+    "font-awesome": "^4.7.0",
+    "naive-ui": "^2.33.4",
     "vue": "^3.2.40",
-    "naive-ui": "^2.33.4"
+    "vue-class-component": "^7.2.6",
+    "vue-property-decorator": "^9.1.2"
   },
   "devDependencies": {
     "@types/node": "^16.11.56",

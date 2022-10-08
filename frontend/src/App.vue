@@ -1,14 +1,34 @@
 <script lang="ts">
-  import Locations from './components/Locations.vue'
   import Map from "./components/Map.vue";
-  import { NCard, NButton, NIcon } from 'naive-ui'
+  import VesselPanel from "./components/VesselPanel.vue";
 
   export default {
     name: 'App',
     components: {
-      Locations,
       Map,
-      NCard, NButton, NIcon
+      VesselPanel,
+    },
+    data() {
+      return { vessels: [{
+        id: '1',
+        name: 'string',
+        lat: 50.9344,
+        lng: -1.39595,
+        address: 'address 1'
+      },{
+        id: '2',
+        name: 'string 2',
+        lat: 51.0714,
+        lng: -1.2202,
+        address: 'address 2'
+      }],
+      focused: {
+        id: '1',
+        name: 'string',
+        lat: 50.9344,
+        lng: -1.39595,
+        address: 'address 1'
+      } }
     }
   }
 </script>
@@ -17,39 +37,10 @@
     <header class="header">
       <h1>Lumico Challenge</h1>
     </header>
-    <div class="grid">
-      <aside class="navbar">
-        <div class="vessels-group">
-          <h4>Vessels</h4>
-          <n-space vertical>
-            <n-card title="Rathaus Galerie" size="medium" class="vessels-item">
-              Kölner Str. 96-100, 41539 Dormagen, Germany
-              <template #header-extra>
-                <n-button circle type="warning" class="card-button"> Edit</n-button>
-                <n-button circle type="error" class="card-button"> Remove</n-button>
-              </template>
-            </n-card>
-
-            <n-card title="Rathaus Galerie" size="medium" class="vessels-item">
-              Kölner Str. 96-100, 41539 Dormagen, Germany
-              <template #header-extra>
-                <n-button circle type="warning" class="card-button"> Edit</n-button>
-                <n-button circle type="error" class="card-button"> Remove</n-button>
-              </template>
-            </n-card>
-
-            <n-card title="Rathaus Galerie" size="medium" class="vessels-item">
-              Kölner Str. 96-100, 41539 Dormagen, Germany
-              <template #header-extra>
-                <n-button circle type="warning" class="card-button"> Edit</n-button>
-                <n-button circle type="error" class="card-button"> Remove</n-button>
-              </template>
-            </n-card>
-          </n-space>
-        </div>
-      </aside>
-      <main class="map"><Map /></main>
-    </div>
+    <main class="grid">
+      <VesselPanel :vessels="vessels"></VesselPanel>
+      <Map :vessels="vessels" :focused="focused" />
+    </main>
 </template>
 
 <style>
@@ -105,7 +96,7 @@ h4 {
   margin-bottom: 10px;
 }
 
-.map {
+Map {
   width: 100%;
   height: 100%;
   background-color: #fff;
