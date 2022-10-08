@@ -33,7 +33,6 @@ class VesselDetailApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         vessel.delete()
         return Response({"res": "Vessel deleted!"}, status=status.HTTP_200_OK)
 
