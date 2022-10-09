@@ -9,10 +9,7 @@
 	const formRef = ref<FormInst | null>(null)
 	const showModalRef = ref(false)
 	const formValue = ref({
-			name: '',
-			lat: '',
-			lng: '',
-			address: '',
+			id: '', name: '', lat: '', lng: '', address: '',
 		});
 
 	export default defineComponent ({
@@ -20,6 +17,7 @@
 		data() {
 			return {
 				vesselsList: [] as IVesselItem[],
+				isEdit: false,
 			}
 		},
 		props: {
@@ -51,25 +49,48 @@
 				this.getVessels();
 			},
 
-			handleValidateClick(formValue: any) {
-				console.log(formRef.value)
+			async updateVessel(item: IVesselItem, vesselID: number) {
+				const response: AxiosResponse = await api.update(vesselID, item).then(res => res);
+
+				if (response.status !== 200) console.log('Cannot update a vessel item');
+				this.getVessels();
+			},
+
+			handleValidateClick(item: any) {
 				formRef.value?.validate(async (errors) => {
 					if (!errors) {
-						console.log(formValue)
 						const vesselDetail: IVesselItem = {
-							name: formValue.name,
-							lat: parseFloat(formValue.lat),
-							lng: parseFloat(formValue.lng),
-							address: formValue.address,
+							name: item.name,
+							lat: parseFloat(item.lat),
+							lng: parseFloat(item.lng),
+							address: item.address,
 						}
 
-						this.addVessel(vesselDetail);
+						this.isEdit ? this.updateVessel(vesselDetail, item.id) : this.addVessel(vesselDetail);
+						this.getVessels();
+						this.isEdit = false;
+						showModalRef.value = false;
+
 					} else {
 						console.log(errors)
 					}
 				})
 			},
-			onNegativeClick () {
+			onAddVesselButtonClick() {
+				this.formValue.id = this.formValue.name = this.formValue.address = this.formValue.lat = this.formValue.lng = '';
+				showModalRef.value = true;
+			},
+			onEditVesselButtonClick(item: IVesselItem) {
+				this.formValue.id = item.id?.toString() || ''
+				this.formValue.name = item.name
+				this.formValue.address = item.address
+				this.formValue.lat = item.lng.toString()
+				this.formValue.lng = item.lat.toString()
+
+				showModalRef.value = true;
+				this.isEdit = true;
+			},
+			onNegativeClick() {
 				showModalRef.value = false
 			}
 		},
@@ -110,13 +131,13 @@
 		<div class="vessels-group">
 			<n-grid x-gap="12" :cols="2">
 				<n-gi><h4>Vessels</h4></n-gi>
-				<n-gi class="addButton"><n-button type="primary" @click="showModal=true"> Add vessel </n-button></n-gi>
+				<n-gi class="addButton"><n-button type="primary" @click="onAddVesselButtonClick()"> Add vessel </n-button></n-gi>
 			</n-grid>
 			<n-space vertical>
 				<n-card size="medium" v-for="item of (vesselsList.length != 0 ? vesselsList : vessels)" :title="item.name" class="vessels-item">
 					{{ item.name }}
 					<template #header-extra>
-					<n-button circle type="warning" class="card-button" @click="showModal=true"> Edit</n-button>
+					<n-button circle type="warning" class="card-button" @click="onEditVesselButtonClick(item)"> Edit</n-button>
 					<n-button circle type="error" class="card-button" @click="onDeleteVessel(item)"> Remove</n-button>
 					</template>
 				</n-card>
