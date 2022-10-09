@@ -8,6 +8,7 @@ export const api = {
     return axios.get<IVesselItem[]>(`${apiUrl}/api/vessel/`);
   },
   async add(data: IVesselItem) {
+    console.log(data)
     return axios.post<IVesselItem>(`${apiUrl}/api/vessel/`, data);
   },
   async update(vesselID: number, data: IVesselItem) {
