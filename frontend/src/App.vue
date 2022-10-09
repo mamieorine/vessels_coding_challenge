@@ -28,7 +28,7 @@
       }
 		},
 		async mounted() {
-      const response = await api.get().then(response => (this.vessels = response.data));
+      const response = await api.get().then(res => res.data);
 
       this.vessels = response;
       this.focused = response[0];
@@ -40,12 +40,9 @@
     <header class="header">
       <h1>Lumico Challenge</h1>
     </header>
-    <!-- <p :focused.sync="focused"
-    {{ focused }}
-    ></p> -->
+
     <main class="grid">
-      <p>{{ focused }}</p>
-      <VesselPanel :vessels="vessels" :focused.sync="focused"></VesselPanel>
+      <VesselPanel :vessels="vessels"></VesselPanel>
       <Map v-if="vessels.length > 0" :vessels="vessels" :focused="focused" />
     </main>
 </template>

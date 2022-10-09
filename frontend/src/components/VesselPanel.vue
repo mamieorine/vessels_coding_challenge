@@ -1,10 +1,17 @@
 <script lang="ts">
-	import { NCard, NButton, NSpace } from 'naive-ui'
+	import { NCard, NButton, NSpace, NGrid, NGi } from 'naive-ui'
 	import { IVesselItem } from '../interfaces'
 	import { defineComponent } from "vue";
+	import { api } from '../utils/api';
+	import type { AxiosResponse } from 'axios';
 
 	export default defineComponent ({
 		name: 'VesselPanel',
+		data() {
+			return {
+				vesselsList: [] as IVesselItem[],
+			}
+		},
 		props: {
 			vessels: {
 				type: Array<IVesselItem>
@@ -14,12 +21,26 @@
 			}
 		},
 		components: {
-			NCard, NButton, NSpace
+			NCard, NButton, NSpace, NGrid, NGi
 		},
-		method() {
-			return function openModal(vessel: IVesselItem) {
-				console.log(vessel.name);
-				// this.$emit('changeTitle', 'Awesome ')
+		methods: {
+			async onDeleteVessel(item: IVesselItem) {
+				const response: AxiosResponse = await api.delete(item.id).then(res => res);
+
+				if (response.status !== 200) {
+					console.log('Cannot delete the item');
+				}
+
+				this.fetchVessels()
+			},
+
+			async fetchVessels() {
+				const response: AxiosResponse = await api.get().then(res => res);
+
+				if (response.status !== 200) {
+					console.log('Cannot fetch vessel items');
+				}
+				this.vesselsList = response.data;
 			}
 		}
 	})
@@ -28,17 +49,18 @@
 <template>
 	<aside class="navbar">
 		<div class="vessels-group">
-			<h4>Vessels</h4>
+			<n-grid x-gap="12" :cols="2">
+				<n-gi><h4>Vessels</h4></n-gi>
+				<n-gi class="addButton"><n-button type="primary"> Add vessel </n-button></n-gi>
+			</n-grid>
 			<n-space vertical>
-			<div v-for="item of vessels">
-				<n-card size="medium" :title="item.name" :focused="focused" class="vessels-item" @click="$emit('update:focused', item)">
+				<n-card size="medium" v-for="item of (vesselsList.length != 0 ? vesselsList : vessels)" :title="item.name" class="vessels-item">
 					{{ item.name }}
 					<template #header-extra>
 					<n-button circle type="warning" class="card-button"> Edit</n-button>
-					<n-button circle type="error" class="card-button"> Remove</n-button>
+					<n-button circle type="error" class="card-button" @click="onDeleteVessel(item)"> Remove</n-button>
 					</template>
 				</n-card>
-			</div>
 			</n-space>
 		</div>
 	</aside>
@@ -47,5 +69,9 @@
 <style>
 	body {
 		margin: 0;
+	}
+
+	.addButton {
+		text-align: right;
 	}
 </style>
