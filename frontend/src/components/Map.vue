@@ -1,22 +1,19 @@
 <script lang="ts">
-	import { IVesselItem } from '../interfaces'
+	import { store } from '../store'
 
 	export default {
 		name: 'Map',
-		props: {
-			vessels: {
-				type: Array<IVesselItem>
-			},
-			focused: {
-				type: IVesselItem
+		data() {
+			return {
+				store
 			}
-		}
+		},
 	};
 </script>
 
 <template>
 	<GMapMap
-		:center="{lat: focused?.lat, lng: focused?.lng}"
+		:center="{lat: store.focusedVessel?.lat ?? -1.39595, lng: store.focusedVessel?.lng ?? 50.9474}"
 		:zoom="16"
 		ref="myMarker"
 		style="width: 100%; height: 50vw"
@@ -24,7 +21,7 @@
 		<GMapCluster :zoomOnClick="true">
 			<GMapMarker
 				:key="index"
-				v-for="(marker, index) in vessels"
+				v-for="(marker, index) in store.vessels"
 				:position="{lat: marker.lat, lng: marker.lng}"
 				:clickable="true"
 				:draggable="true"
@@ -34,7 +31,9 @@
 </template>
 
 <style>
-	body {
-		margin: 0;
+	Map {
+		width: 100%;
+		height: 100%;
+		background-color: #fff;
 	}
 </style>

@@ -1,31 +1,32 @@
 <script lang="ts">
-	import { NCard, NButton, NSpace, NGrid, NGi, NModal, NForm, NFormItem, NInput } from 'naive-ui'
+	import { NCard, NButton, NSpace, NGrid, NScrollbar,
+		NGi, NModal, NForm, NFormItem, NInput } from 'naive-ui'
 	import type {FormInst} from 'naive-ui'
-	import { IVesselItem } from '../interfaces'
+	import type { IVesselItem } from '../interfaces'
 	import { defineComponent, ref } from "vue";
 	import { api } from '../utils/api';
 	import type { AxiosResponse } from 'axios';
+	import { store } from '../store'
 
 	const formRef = ref<FormInst | null>(null)
 	const showModalRef = ref(false)
-	const formValue = ref({
-			id: '', name: '', lat: '', lng: '', address: '',
-		});
+	const formValue = ref({id: '', name: '', lat: '', lng: '', address: ''});
 
 	export default defineComponent ({
 		name: 'VesselPanel',
 		data() {
 			return {
-				vesselsList: [] as IVesselItem[],
+				store,
 				isEdit: false,
 			}
 		},
-		props: {
-			vessels: { type: Array<IVesselItem> },
-			focused: { type: IVesselItem }
-		},
 		components: {
-			NCard, NButton, NSpace, NGrid, NGi, NModal, NForm, NFormItem, NInput
+			NCard, NButton, NSpace, NGrid, NGi, NModal, NForm, NFormItem, NInput, NScrollbar
+		},
+		async mounted() {
+			await this.getVessels().then(() => {
+				store.focusedVessel = store.vessels[0]
+			});
 		},
 		methods: {
 			async onDeleteVessel(item: IVesselItem) {
@@ -39,7 +40,7 @@
 				const response: AxiosResponse = await api.get().then(res => res);
 
 				if (response.status !== 200) console.log('Cannot fetch vessel items');
-				this.vesselsList = response.data;
+				store.vessels = response.data;
 			},
 
 			async addVessel(item: IVesselItem) {
@@ -128,13 +129,14 @@
 
 <template>
 	<aside class="navbar">
-		<div class="vessels-group">
+		<n-scrollbar style="max-height: 90%" class="vessels-group">
+			{{ store.focusedVessel }}
 			<n-grid x-gap="12" :cols="2">
-				<n-gi><h4>Vessels</h4></n-gi>
+				<n-gi><h4>Vessels {{store.vessels[0]?.name }}</h4></n-gi>
 				<n-gi class="addButton"><n-button type="primary" @click="onAddVesselButtonClick()"> Add vessel </n-button></n-gi>
 			</n-grid>
 			<n-space vertical>
-				<n-card size="medium" v-for="item of (vesselsList.length != 0 ? vesselsList : vessels)" :title="item.name" class="vessels-item">
+				<n-card size="medium" v-for="item of (store.vessels)" :title="item.name" class="vessels-item" @click="store.focusedVessel = item">
 					{{ item.name }}
 					<template #header-extra>
 					<n-button circle type="warning" class="card-button" @click="onEditVesselButtonClick(item)"> Edit</n-button>
@@ -142,7 +144,7 @@
 					</template>
 				</n-card>
 			</n-space>
-		</div>
+		</n-scrollbar>
 	</aside>
 
 	<n-modal
@@ -183,11 +185,40 @@
 </template>
 
 <style>
-	body {
-		margin: 0;
+	h4 {
+		font-size: 22px !important;
+		margin-bottom: 20px !important;
 	}
 
 	.addButton {
 		text-align: right;
+	}
+
+	.card-button {
+		margin-left: 5px;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr 3fr;
+		padding: 0;
+		margin: auto;
+		align-items: start;
+	}
+
+	.navbar {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: flex-start !important;
+	}
+
+	.vessels-group {
+		width: 100%;
+		padding-right: 40px;
+		padding: 40px;
+	}
+	.vessels-item {
+		margin-bottom: 10px;
 	}
 </style>
