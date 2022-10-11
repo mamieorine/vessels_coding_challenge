@@ -142,7 +142,7 @@
 				<n-gi class="addButton"><n-button type="primary" @click="onAddVesselButtonClick()"> Add vessel </n-button></n-gi>
 			</n-grid>
 			<n-space vertical>
-				<n-card size="medium" v-for="item of (store.vessels)" :title="item.name" class="vessels-item" @click="store.focusedVessel = item">
+				<n-card size="medium" v-for="item of (store.vessels)" :title="item.name" :class="['vessels-item', store.focusedVessel.id === item.id ? 'active' : '' ]" @click="store.focusedVessel = item">
 					{{ item.address }}
 					<template #header-extra>
 					<n-button circle type="warning" class="card-button" @click="onEditVesselButtonClick(item)">
@@ -216,6 +216,15 @@
 		background-color: #fff;
 		box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
 		border-radius: 10px;
+	}
+
+	.n-card.vessels-item.active {
+		background-color: #EFF6FC !important;
+		border: 1px solid #B2D5F3;
+	}
+
+	.n-card.n-card:hover {
+		cursor: pointer;
 	}
 
 	.n-card > .n-card-header {
