@@ -41,6 +41,15 @@
 
 .header h1 {
   font-size: 30px !important;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 3fr;
+  padding: 0;
+  margin: auto;
+  align-items: start;
 }
 
 </style>

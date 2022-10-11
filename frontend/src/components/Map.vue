@@ -5,7 +5,11 @@
 		name: 'Map',
 		data() {
 			return {
-				store
+				store,
+				defaultFocused: {
+					lat: 50.9346,
+					lng: -1.3960
+				}
 			}
 		},
 	};
@@ -13,20 +17,18 @@
 
 <template>
 	<GMapMap
-		:center="{lat: store.focusedVessel?.lat ?? -1.39595, lng: store.focusedVessel?.lng ?? 50.9474}"
+		:center="{lat: store.focusedVessel.lat ?? defaultFocused.lat, lng: store.focusedVessel.lng ?? defaultFocused.lng}"
 		:zoom="16"
-		ref="myMarker"
+		map-type-id="terrain"
 		style="width: 100%; height: 50vw"
 	>
-		<GMapCluster :zoomOnClick="true">
-			<GMapMarker
-				:key="index"
-				v-for="(marker, index) in store.vessels"
-				:position="{lat: marker.lat, lng: marker.lng}"
-				:clickable="true"
-				:draggable="true"
-			/>
-		</GMapCluster>
+		<GMapMarker
+			v-for="(marker, index) in store.vessels"
+			:key="index"
+			:position="{lat: marker.lat, lng: marker.lng}"
+			:clickable="true"
+			:draggable="true"
+		/>
 	</GMapMap>
 </template>
 

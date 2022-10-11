@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { NCard, NButton, NSpace, NGrid, NScrollbar,
 		NGi, NModal, NForm, NFormItem, NInput } from 'naive-ui'
-	import type {FormInst} from 'naive-ui'
+	import { Icon } from '@vicons/utils'
+	import { Edit24Filled, Delete24Filled } from '@vicons/fluent'
+	import type { FormInst } from 'naive-ui'
 	import type { IVesselItem } from '../interfaces'
 	import { defineComponent, ref } from "vue";
 	import { api } from '../utils/api';
@@ -21,26 +23,27 @@
 			}
 		},
 		components: {
-			NCard, NButton, NSpace, NGrid, NGi, NModal, NForm, NFormItem, NInput, NScrollbar
+			NCard, NButton, NSpace, NGrid, NGi, NModal, NForm, NFormItem, NInput, NScrollbar, Icon, Edit24Filled, Delete24Filled
 		},
 		async mounted() {
-			await this.getVessels().then(() => {
-				store.focusedVessel = store.vessels[0]
-			});
+			await this.getVessels();
 		},
 		methods: {
 			async onDeleteVessel(item: IVesselItem) {
 				const response: AxiosResponse = await api.delete(item.id ?? 0).then(res => res);
 
 				if (response.status !== 200) console.log('Cannot delete the item');
+
 				this.getVessels()
 			},
-
 			async getVessels() {
 				const response: AxiosResponse = await api.get().then(res => res);
-
+				console.log(store.vessels)
 				if (response.status !== 200) console.log('Cannot fetch vessel items');
+				console.log(response.data)
 				store.vessels = response.data;
+
+				store.focusedVessel = store.vessels[0]
 			},
 
 			async addVessel(item: IVesselItem) {
@@ -51,6 +54,8 @@
 			},
 
 			async updateVessel(item: IVesselItem, vesselID: number) {
+				console.log(item)
+				console.log(vesselID)
 				const response: AxiosResponse = await api.update(vesselID, item).then(res => res);
 
 				if (response.status !== 200) console.log('Cannot update a vessel item');
@@ -85,8 +90,8 @@
 				this.formValue.id = item.id?.toString() || ''
 				this.formValue.name = item.name
 				this.formValue.address = item.address
-				this.formValue.lat = item.lng.toString()
-				this.formValue.lng = item.lat.toString()
+				this.formValue.lat = item.lat.toString()
+				this.formValue.lng = item.lng.toString()
 
 				showModalRef.value = true;
 				this.isEdit = true;
@@ -121,7 +126,7 @@
 						message: 'Please input address',
 						trigger: ['input', 'blur']
 					}
-				},
+				}
 			}
 		}
 	})
@@ -130,17 +135,20 @@
 <template>
 	<aside class="navbar">
 		<n-scrollbar style="max-height: 90%" class="vessels-group">
-			{{ store.focusedVessel }}
 			<n-grid x-gap="12" :cols="2">
-				<n-gi><h4>Vessels {{store.vessels[0]?.name }}</h4></n-gi>
+				<n-gi><h4>Vessels</h4></n-gi>
 				<n-gi class="addButton"><n-button type="primary" @click="onAddVesselButtonClick()"> Add vessel </n-button></n-gi>
 			</n-grid>
 			<n-space vertical>
 				<n-card size="medium" v-for="item of (store.vessels)" :title="item.name" class="vessels-item" @click="store.focusedVessel = item">
-					{{ item.name }}
+					{{ item.address }}
 					<template #header-extra>
-					<n-button circle type="warning" class="card-button" @click="onEditVesselButtonClick(item)"> Edit</n-button>
-					<n-button circle type="error" class="card-button" @click="onDeleteVessel(item)"> Remove</n-button>
+					<n-button circle type="warning" class="card-button" @click="onEditVesselButtonClick(item)">
+						<Icon> <Edit24Filled /> </Icon>
+					</n-button>
+					<n-button circle type="error" class="card-button" @click="onDeleteVessel(item)">
+						<Icon> <Delete24Filled /> </Icon>
+					</n-button>
 					</template>
 				</n-card>
 			</n-space>
@@ -150,7 +158,7 @@
 	<n-modal
 		v-model:show="showModal">
 		<n-card
-			title="Add new vessel"
+			:title="isEdit ? 'Edit vessel' : 'Add new vessel'"
 			:bordered="false"
 			size="huge"
 			role="dialog"
@@ -185,6 +193,10 @@
 </template>
 
 <style>
+	* {
+		box-sizing: border-box;
+	}
+
 	h4 {
 		font-size: 22px !important;
 		margin-bottom: 20px !important;
@@ -198,12 +210,30 @@
 		margin-left: 5px;
 	}
 
-	.grid {
-		display: grid;
-		grid-template-columns: 1fr 3fr;
-		padding: 0;
-		margin: auto;
-		align-items: start;
+	.n-card {
+		background-color: #fff;
+		box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+		border-radius: 10px;
+	}
+
+	.n-card > .n-card-header {
+		padding-bottom: 15px !important;
+	}
+
+	.n-card > .n-card__content {
+		color: #666;
+	}
+
+	.n-card__footer {
+		text-align: center;
+	}
+
+	.n-card__content {
+		padding-bottom: 15px !important;
+	}
+
+	.n-button--error-type {
+		margin-left: 10px !important;
 	}
 
 	.navbar {
@@ -211,12 +241,12 @@
 		height: 100%;
 		display: flex;
 		align-items: flex-start !important;
+		background-color: #fafafa;
 	}
 
 	.vessels-group {
 		width: 100%;
-		padding-right: 40px;
-		padding: 40px;
+		padding: 20px !important;
 	}
 	.vessels-item {
 		margin-bottom: 10px;
