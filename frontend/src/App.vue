@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { defineComponent } from "vue";
+
   import Map from "@/components/Map.vue";
   import VesselPanel from "@/components/VesselPanel.vue";
-  import { defineComponent } from "vue";
 
   export default defineComponent ({
     name: 'App',

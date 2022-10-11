@@ -1,14 +1,15 @@
 <script lang="ts">
+	import { defineComponent, ref } from "vue";
+	import type { AxiosResponse } from 'axios';
+	import type { FormInst } from 'naive-ui'
 	import { NCard, NButton, NSpace, NGrid, NScrollbar,
 		NGi, NModal, NForm, NFormItem, NInput } from 'naive-ui'
 	import { Icon } from '@vicons/utils'
 	import { Edit24Filled, Delete24Filled } from '@vicons/fluent'
-	import type { FormInst } from 'naive-ui'
-	import type { IVesselItem } from '../interfaces'
-	import { defineComponent, ref } from "vue";
-	import { api } from '../utils/api';
-	import type { AxiosResponse } from 'axios';
-	import { store } from '../store'
+
+	import type { IVesselItem } from '@/interfaces'
+	import { api } from '@/utils/api';
+	import { store } from '@/store'
 
 	const formRef = ref<FormInst | null>(null)
 	const showModalRef = ref(false)
@@ -85,6 +86,7 @@
 			onAddVesselButtonClick() {
 				this.formValue.id = this.formValue.name = this.formValue.address = this.formValue.lat = this.formValue.lng = '';
 				showModalRef.value = true;
+				this.isEdit = false;
 			},
 			onEditVesselButtonClick(item: IVesselItem) {
 				this.formValue.id = item.id?.toString() || ''

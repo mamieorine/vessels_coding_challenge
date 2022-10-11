@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { store } from '../store'
+	import { store } from '@/store'
 
 	export default {
 		name: 'Map',
@@ -20,15 +20,13 @@
 		:center="{lat: store.focusedVessel.lat ?? defaultFocused.lat, lng: store.focusedVessel.lng ?? defaultFocused.lng}"
 		:zoom="16"
 		map-type-id="terrain"
-		style="width: 100%; height: 50vw"
-	>
+		style="width: 100%; height: 50vw">
 		<GMapMarker
 			v-for="(marker, index) in store.vessels"
 			:key="index"
 			:position="{lat: marker.lat, lng: marker.lng}"
 			:clickable="true"
-			:draggable="true"
-		/>
+			:draggable="true"/>
 	</GMapMap>
 </template>
 
