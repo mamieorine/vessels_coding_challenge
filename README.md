@@ -1,6 +1,6 @@
 # vessels_coding_challenge
 
-## Start Vue (frontend)
+## Start Vue (FE)
 
 ```
 cd frontend
@@ -8,7 +8,7 @@ npm install
 npm run dev
 ```
 
-## Start Django (Python)
+## Start Django (BE)
 
 ```
 cd backend
