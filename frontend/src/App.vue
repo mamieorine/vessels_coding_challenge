@@ -14,7 +14,7 @@
 
 <template>
     <header class="header">
-      <h1>Lumico Challenge</h1>
+      <h1>Lumico Digital coding challenge</h1>
     </header>
 
     <main class="grid">
@@ -40,8 +40,9 @@
 }
 
 .header h1 {
-  font-size: 30px !important;
+  font-size: 28px !important;
   font-weight: 600;
+  color: #333;
 }
 
 .grid {
